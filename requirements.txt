@@ -1,0 +1,13 @@
+# CodeSage Backend - Minimal Requirements
+
+# Core requirement for AI features (optional)
+aiohttp>=3.8.0
+
+# Optional dependencies for enhanced functionality
+GitPython>=3.1.0    # For Git repository handling
+requests>=2.25.0    # For API calls
+PyYAML>=5.4.0       # For configuration files
+
+# Development dependencies (optional)
+pytest>=6.0.0       # For testing
+black>=21.0.0       # For code formatting
