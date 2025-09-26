@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+
+# Environment
+.env
+
+# Output
+refactored_codebase/
+temp_repo/
+
+# IDE
+.idea/
+.vscode/
