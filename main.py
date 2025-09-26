@@ -22,7 +22,7 @@ Examples:
   python main.py /path/to/local/project
   python main.py https://github.com/user/repo.git
   python main.py https://github.com/user/repo --output-dir my_refactored_code
-  python main.py /path/to/project --model gemini-1.5-pro-latest
+  python main.py /path/to/project --model gemini-2.5-flash-lite
         """
     )
     parser.add_argument(
@@ -36,9 +36,9 @@ Examples:
     )
     parser.add_argument(
         "--model",
-        choices=["gemini-1.5-flash-latest", "gemini-1.5-pro-latest", "gemini-pro", "gemini-pro-vision"],
-        default="gemini-1.5-flash-latest",
-        help="Gemini model to use. gemini-1.5-flash-latest is faster, gemini-1.5-pro-latest is more capable."
+        choices=["gemini-2.5-flash-lite", "gemini-1.5-flash-8b", "gemini-pro", "gemini-pro-vision"],
+        default="gemini-2.5-flash-lite", 
+        help="The Gemini model to use for all API calls. Defaults to 'gemini-2.5-flash-lite'."
     )
     parser.add_argument(
         "--skip-analysis",

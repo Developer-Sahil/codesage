@@ -27,13 +27,12 @@ def test_gemini_models():
     print("=" * 50)
     
     # List of models to test (Google AI Studio compatible names)
+    # Updated model list to test:
     models_to_test = [
-        "gemini-1.5-flash-latest",
-        "gemini-1.5-pro-latest", 
-        "gemini-1.5-flash",
-        "gemini-1.5-pro",
-        "gemini-pro",
-        "gemini-pro-vision"
+    "models/gemini-2.5-flash", 
+    "models/gemini-2.5-flash-lite",
+    "models/gemini-pro-latest", 
+    "models/gemini-1.5-flash-8b"
     ]
     
     working_models = []
