@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 CodeSage Backend - Main Application Module
 A comprehensive backend system for analyzing and refactoring codebases.
@@ -26,7 +25,6 @@ except ImportError as e:
     print("Make sure all CodeSage modules are in the same directory.")
     exit(1)
 
-# Optional AI import
 try:
     from llm_orchestrator import GroqLLMOrchestrator
     AI_AVAILABLE = True

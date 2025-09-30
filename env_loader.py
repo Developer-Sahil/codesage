@@ -9,4 +9,4 @@ def load_env_file(filepath='.env'):
                     key, value = line.split('=', 1)
                     os.environ[key.strip()] = value.strip().strip('"\'')
     except FileNotFoundError:
-        pass  # .env file doesn't exist, that's okay
+        pass
