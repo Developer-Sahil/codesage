@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Codebase Refactoring Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .checkbox-group:hover {
+            background: #e9ecef;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-section {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .progress-section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .status-log {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .log-entry {
+            padding: 8px;
+            margin-bottom: 5px;
+            border-left: 3px solid #667eea;
+            padding-left: 12px;
+            animation: slideInLeft 0.3s;
+        }
+
+        .log-entry.success {
+            border-left-color: #28a745;
+            color: #28a745;
+        }
+
+        .log-entry.error {
+            border-left-color: #dc3545;
+            color: #dc3545;
+        }
+
+        .log-entry.warning {
+            border-left-color: #ffc107;
+            color: #f57c00;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .results-section {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .results-section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .result-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .result-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .file-item {
+            padding: 10px;
+            background: #f8f9fa;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .help-text {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 AI Codebase Refactoring Agent</h1>
+            <p class="subtitle">Powered by Google Gemini AI</p>
+        </header>
+
+        <div class="main-card">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="sourcePath">📂 Source Path or GitHub URL</label>
+                    <input 
+                        type="text" 
+                        id="sourcePath" 
+                        placeholder="e.g., /path/to/project or https://github.com/user/repo.git"
+                    >
+                    <p class="help-text">Enter a local directory path or a public GitHub repository URL</p>
+                </div>
+
+                <div class="input-group">
+                    <label for="outputDir">💾 Output Directory</label>
+                    <input 
+                        type="text" 
+                        id="outputDir" 
+                        placeholder="refactored_codebase"
+                        value="refactored_codebase"
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="model">🧠 Gemini Model</label>
+                    <select id="model">
+                        <option value="gemini-1.5-flash-latest">Gemini 1.5 Flash (Fast, Recommended)</option>
+                        <option value="gemini-1.5-pro-latest">Gemini 1.5 Pro (High Quality)</option>
+                        <option value="gemini-pro">Gemini Pro (Legacy)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="delay">⏱️ API Delay (seconds)</label>
+                    <input 
+                        type="text" 
+                        id="delay" 
+                        placeholder="2"
+                        value="2"
+                    >
+                    <p class="help-text">Delay between API calls to respect rate limits</p>
+                </div>
+
+                <div class="options-grid">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="skipAnalysis">
+                        <label for="skipAnalysis" style="margin: 0;">Skip Analysis</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="skipRefactoring">
+                        <label for="skipRefactoring" style="margin: 0;">Skip Refactoring</label>
+                    </div>
+                </div>
+
+                <button class="btn" id="startBtn" onclick="startRefactoring()">
+                    🚀 Start Refactoring
+                </button>
+            </div>
+
+            <div class="progress-section" id="progressSection">
+                <h2 style="margin-bottom: 20px;">⚙️ Processing...</h2>
+                
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar">0%</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="filesProcessed">0</div>
+                        <div class="stat-label">Files Processed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="filesAnalyzed">0</div>
+                        <div class="stat-label">Files Analyzed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="filesRefactored">0</div>
+                        <div class="stat-label">Files Refactored</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="timeElapsed">0s</div>
+                        <div class="stat-label">Time Elapsed</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 25px; margin-bottom: 15px;">📋 Status Log</h3>
+                <div class="status-log" id="statusLog">
+                    <div class="log-entry">Waiting to start...</div>
+                </div>
+            </div>
+
+            <div class="results-section" id="resultsSection">
+                <h2 style="margin-bottom: 20px;">✅ Results</h2>
+                
+                <div class="result-card">
+                    <h3>📊 Summary</h3>
+                    <p id="resultSummary">Processing complete! Your refactored codebase is ready.</p>
+                </div>
+
+                <div class="result-card">
+                    <h3>📁 Processed Files</h3>
+                    <ul class="file-list" id="fileList">
+                        <!-- Files will be added here dynamically -->
+                    </ul>
+                </div>
+
+                <div class="result-card">
+                    <h3>💡 Next Steps</h3>
+                    <ul style="padding-left: 20px; line-height: 1.8;">
+                        <li>Review the refactored code in the output directory</li>
+                        <li>Check CODEBASE_RECOMMENDATIONS.md for improvement suggestions</li>
+                        <li>Review INTERVIEW_QUESTIONS.md for technical insights</li>
+                        <li>Test the refactored code to ensure functionality is preserved</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let startTime;
+        let timerInterval;
+
+        function addLog(message, type = 'info') {
+            const logContainer = document.getElementById('statusLog');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function updateProgress(percent) {
+            const bar = document.getElementById('progressBar');
+            bar.style.width = percent + '%';
+            bar.textContent = percent + '%';
+        }
+
+        function updateStats(processed, analyzed, refactored) {
+            document.getElementById('filesProcessed').textContent = processed;
+            document.getElementById('filesAnalyzed').textContent = analyzed;
+            document.getElementById('filesRefactored').textContent = refactored;
+        }
+
+        function startTimer() {
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                document.getElementById('timeElapsed').textContent = elapsed + 's';
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+        }
+
+        function simulateProcessing() {
+            const files = [
+                { name: 'main.py', icon: '🐍' },
+                { name: 'agent.py', icon: '🐍' },
+                { name: 'config.py', icon: '🐍' },
+                { name: 'utils.py', icon: '🐍' },
+                { name: 'setup.py', icon: '🐍' }
+            ];
+
+            let step = 0;
+            const totalSteps = files.length * 2;
+
+            const interval = setInterval(() => {
+                if (step >= totalSteps) {
+                    clearInterval(interval);
+                    stopTimer();
+                    showResults(files);
+                    return;
+                }
+
+                const fileIndex = Math.floor(step / 2);
+                const isAnalysis = step % 2 === 0;
+
+                if (isAnalysis) {
+                    addLog(`🔍 Analyzing: ${files[fileIndex].name}`, 'info');
+                    updateStats(fileIndex, fileIndex + 1, fileIndex);
+                } else {
+                    addLog(`✨ Refactoring: ${files[fileIndex].name}`, 'success');
+                    updateStats(fileIndex + 1, fileIndex + 1, fileIndex + 1);
+                }
+
+                const progress = Math.round(((step + 1) / totalSteps) * 100);
+                updateProgress(progress);
+
+                step++;
+            }, 1500);
+        }
+
+        function showResults(files) {
+            addLog('🎉 Processing complete!', 'success');
+            
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+            
+            files.forEach(file => {
+                const li = document.createElement('li');
+                li.className = 'file-item';
+                li.innerHTML = `<span>${file.icon}</span> <span>${file.name}</span>`;
+                fileList.appendChild(li);
+            });
+
+            document.getElementById('resultsSection').classList.add('active');
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('startBtn').textContent = '🚀 Start New Refactoring';
+        }
+
+        function startRefactoring() {
+            const sourcePath = document.getElementById('sourcePath').value;
+            
+            if (!sourcePath) {
+                alert('Please enter a source path or GitHub URL');
+                return;
+            }
+
+            // Reset UI
+            document.getElementById('statusLog').innerHTML = '';
+            document.getElementById('resultsSection').classList.remove('active');
+            updateProgress(0);
+            updateStats(0, 0, 0);
+            
+            // Show progress section
+            document.getElementById('progressSection').classList.add('active');
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('startBtn').textContent = '⏳ Processing...';
+            
+            // Start
+            addLog('🚀 Starting codebase processing...', 'info');
+            addLog(`📂 Source: ${sourcePath}`, 'info');
+            addLog(`🤖 Using model: ${document.getElementById('model').value}`, 'info');
+            
+            startTimer();
+            
+            // Simulate processing (in real implementation, this would call your Python backend)
+            setTimeout(() => {
+                addLog('✅ Configuration validated', 'success');
+                addLog('📦 Dependencies loaded', 'success');
+                simulateProcessing();
+            }, 1000);
+        }
+
+        // Prevent both checkboxes from being checked
+        document.getElementById('skipAnalysis').addEventListener('change', function() {
+            if (this.checked) {
+                document.getElementById('skipRefactoring').checked = false;
+            }
+        });
+
+        document.getElementById('skipRefactoring').addEventListener('change', function() {
+            if (this.checked) {
+                document.getElementById('skipAnalysis').checked = false;
+            }
+        });
+    </script>
+</body>
+</html>
