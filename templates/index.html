@@ -12,367 +12,421 @@
         }
 
         body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        padding: 20px;
-        color: #333;
-    }
-
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    header {
-        text-align: center;
-        color: white;
-        margin-bottom: 40px;
-        animation: fadeInDown 0.8s ease-out;
-    }
-
-    h1 {
-        font-size: 2.5em;
-        margin-bottom: 10px;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    }
-
-    .subtitle {
-        font-size: 1.1em;
-        opacity: 0.9;
-    }
-
-    .main-card {
-        background: white;
-        border-radius: 20px;
-        padding: 40px;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        animation: fadeInUp 0.8s ease-out;
-    }
-
-    .input-section {
-        margin-bottom: 30px;
-    }
-
-    .input-group {
-        margin-bottom: 20px;
-    }
-
-    label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 600;
-        color: #555;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    select {
-        width: 100%;
-        padding: 12px 16px;
-        border: 2px solid #e0e0e0;
-        border-radius: 10px;
-        font-size: 16px;
-        transition: all 0.3s;
-    }
-
-    input[type="text"]:focus,
-    input[type="number"]:focus,
-    select:focus {
-        outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    .options-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 15px;
-        margin-bottom: 20px;
-    }
-
-    .checkbox-group {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 12px;
-        background: #f8f9fa;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-    .checkbox-group:hover {
-        background: #e9ecef;
-    }
-
-    input[type="checkbox"] {
-        width: 20px;
-        height: 20px;
-        cursor: pointer;
-    }
-
-    .btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        padding: 15px 40px;
-        font-size: 18px;
-        font-weight: 600;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: all 0.3s;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    }
-
-    .btn:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-    }
-
-    .btn:active {
-        transform: translateY(0);
-    }
-
-    .btn:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none;
-    }
-
-    .btn-success {
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
-    }
-
-    .btn-success:hover:not(:disabled) {
-        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
-    }
-
-    .btn-group {
-        display: flex;
-        gap: 15px;
-        flex-wrap: wrap;
-    }
-
-    .progress-section {
-        display: none;
-        margin-top: 30px;
-        padding: 30px;
-        background: #f8f9fa;
-        border-radius: 15px;
-    }
-
-    .progress-section.active {
-        display: block;
-        animation: fadeIn 0.5s;
-    }
-
-    .progress-bar-container {
-        width: 100%;
-        height: 30px;
-        background: #e0e0e0;
-        border-radius: 15px;
-        overflow: hidden;
-        margin-bottom: 20px;
-    }
-
-    .progress-bar {
-        height: 100%;
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-        width: 0%;
-        transition: width 0.5s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: 600;
-    }
-
-    .status-log {
-        background: white;
-        border-radius: 10px;
-        padding: 20px;
-        max-height: 300px;
-        overflow-y: auto;
-        font-family: 'Courier New', monospace;
-        font-size: 14px;
-    }
-
-    .log-entry {
-        padding: 8px;
-        margin-bottom: 5px;
-        border-left: 3px solid #667eea;
-        padding-left: 12px;
-        animation: slideInLeft 0.3s;
-    }
-
-    .log-entry.success {
-        border-left-color: #28a745;
-        color: #28a745;
-    }
-
-    .log-entry.error {
-        border-left-color: #dc3545;
-        color: #dc3545;
-    }
-
-    .log-entry.warning {
-        border-left-color: #ffc107;
-        color: #f57c00;
-    }
-
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 15px;
-        margin-top: 20px;
-    }
-
-    .stat-card {
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    .stat-value {
-        font-size: 2em;
-        font-weight: bold;
-        color: #667eea;
-        margin-bottom: 5px;
-    }
-
-    .stat-label {
-        font-size: 0.9em;
-        color: #666;
-    }
-
-    .results-section {
-        display: none;
-        margin-top: 30px;
-    }
-
-    .results-section.active {
-        display: block;
-        animation: fadeIn 0.5s;
-    }
-
-    .result-card {
-        background: white;
-        padding: 25px;
-        border-radius: 15px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-    }
-
-    .result-card h3 {
-        color: #667eea;
-        margin-bottom: 15px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .alert {
-        padding: 15px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-    }
-
-    .alert-error {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-
-    .alert-success {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-
-    .download-card {
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-        color: white;
-        padding: 30px;
-        border-radius: 15px;
-        text-align: center;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 20px rgba(40, 167, 69, 0.3);
-    }
-
-    .download-card h2 {
-        margin-bottom: 15px;
-        font-size: 1.8em;
-    }
-
-    .download-card p {
-        margin-bottom: 20px;
-        opacity: 0.95;
-    }
-
-    @keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-30px);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #e0e0e0;
         }
-        to {
-            opacity: 1;
-            transform: translateY(0);
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
         }
-    }
 
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease-out;
         }
-        to {
-            opacity: 1;
-            transform: translateY(0);
+
+        h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-    }
 
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    @keyframes slideInLeft {
-        from {
-            opacity: 0;
-            transform: translateX(-20px);
+        .subtitle {
+            font-size: 1.1em;
+            color: #a0a0a0;
         }
-        to {
-            opacity: 1;
-            transform: translateX(0);
+
+        .main-card {
+            background: rgba(30, 30, 50, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            animation: fadeInUp 0.8s ease-out;
         }
-    }
 
-    @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-    }
+        .input-section {
+            margin-bottom: 30px;
+        }
 
-    .help-text {
-        font-size: 0.9em;
-        color: #666;
-        margin-top: 5px;
-    }
+        .input-group {
+            margin-bottom: 20px;
+        }
 
-    .download-icon {
-        animation: pulse 2s infinite;
-        display: inline-block;
-    }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #b0b0b0;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(20, 20, 35, 0.6);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            font-size: 16px;
+            color: #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+            background: rgba(20, 20, 35, 0.8);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .checkbox-group:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.4);
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.7);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .btn-success:hover:not(:disabled) {
+            box-shadow: 0 6px 25px rgba(16, 185, 129, 0.7);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.5);
+        }
+
+        .btn-download:hover:not(:disabled) {
+            box-shadow: 0 6px 25px rgba(245, 158, 11, 0.7);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .progress-section {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: rgba(20, 20, 35, 0.6);
+            border-radius: 15px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .progress-section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 30px;
+            background: rgba(20, 20, 35, 0.8);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .status-log {
+            background: rgba(10, 10, 20, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .status-log::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .status-log::-webkit-scrollbar-track {
+            background: rgba(20, 20, 35, 0.5);
+            border-radius: 4px;
+        }
+
+        .status-log::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.5);
+            border-radius: 4px;
+        }
+
+        .log-entry {
+            padding: 8px;
+            margin-bottom: 5px;
+            border-left: 3px solid #667eea;
+            padding-left: 12px;
+            animation: slideInLeft 0.3s;
+            color: #c0c0c0;
+        }
+
+        .log-entry.success {
+            border-left-color: #10b981;
+            color: #6ee7b7;
+        }
+
+        .log-entry.error {
+            border-left-color: #ef4444;
+            color: #fca5a5;
+        }
+
+        .log-entry.warning {
+            border-left-color: #f59e0b;
+            color: #fcd34d;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #a0a0a0;
+        }
+
+        .results-section {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .results-section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .result-card {
+            background: rgba(20, 20, 35, 0.6);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .result-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.4em;
+        }
+
+        .recommendations-content {
+            background: rgba(10, 10, 20, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            line-height: 1.8;
+            color: #d0d0d0;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .recommendations-content h4 {
+            color: #8b9fe8;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .recommendations-content ul {
+            padding-left: 25px;
+            margin-top: 10px;
+        }
+
+        .recommendations-content li {
+            margin-bottom: 10px;
+            color: #c0c0c0;
+        }
+
+        .download-card {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        .download-card h2 {
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        .file-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .file-item {
+            padding: 10px;
+            margin-bottom: 5px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+            color: #d0d0d0;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .help-text {
+            font-size: 0.9em;
+            color: #808080;
+            margin-top: 5px;
+        }
+
+        .section-title {
+            color: #8b9fe8;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>🤖 AI Codebase Refactoring Agent</h1>
-            <p class="subtitle">Powered by Google Gemini AI</p>
+            <p class="subtitle">Powered by Google Gemini AI - Dark Edition</p>
         </header>
 
         <div class="main-card">
@@ -400,8 +454,8 @@
                 <div class="input-group">
                     <label for="model">🧠 Gemini Model</label>
                     <select id="model">
-                        <option value="gemini-1.5-flash-latest">Gemini 1.5 Flash (Fast, Recommended)</option>
-                        <option value="gemini-1.5-pro-latest">Gemini 1.5 Pro (High Quality)</option>
+                        <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash Lite (Fastest)</option>
+                        <option value="gemini-1.5-flash-8b">Gemini 1.5 Flash 8B</option>
                         <option value="gemini-pro">Gemini Pro (Legacy)</option>
                     </select>
                 </div>
@@ -434,7 +488,7 @@
             </div>
 
             <div class="progress-section" id="progressSection">
-                <h2 style="margin-bottom: 20px;">⚙️ Processing...</h2>
+                <h2 class="section-title">⚙️ Processing...</h2>
                 
                 <div class="progress-bar-container">
                     <div class="progress-bar" id="progressBar">0%</div>
@@ -459,34 +513,41 @@
                     </div>
                 </div>
 
-                <h3 style="margin-top: 25px; margin-bottom: 15px;">📋 Status Log</h3>
+                <h3 class="section-title" style="margin-top: 25px;">📋 Status Log</h3>
                 <div class="status-log" id="statusLog">
                     <div class="log-entry">Waiting to start...</div>
                 </div>
             </div>
 
             <div class="results-section" id="resultsSection">
-                <h2 style="margin-bottom: 20px;">✅ Results</h2>
+                <h2 class="section-title">✅ Results</h2>
                 
+                <div class="download-card">
+                    <h2>📦 Download Refactored Code</h2>
+                    <p>Your refactored codebase is ready for download</p>
+                    <button class="btn btn-download" onclick="downloadResults()">
+                        <span class="download-icon">⬇️</span> Download ZIP
+                    </button>
+                </div>
+
                 <div class="result-card">
-                    <h3>📊 Summary</h3>
-                    <p id="resultSummary">Processing complete! Your refactored codebase is ready.</p>
+                    <h3>💡 Codebase Recommendations</h3>
+                    <div class="recommendations-content" id="recommendationsContent">
+                        <p>Loading recommendations...</p>
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <h3>🎙️ Interview Questions</h3>
+                    <div class="recommendations-content" id="interviewContent">
+                        <p>Loading interview questions...</p>
+                    </div>
                 </div>
 
                 <div class="result-card">
                     <h3>📁 Processed Files</h3>
                     <ul class="file-list" id="fileList">
                         <!-- Files will be added here dynamically -->
-                    </ul>
-                </div>
-
-                <div class="result-card">
-                    <h3>💡 Next Steps</h3>
-                    <ul style="padding-left: 20px; line-height: 1.8;">
-                        <li>Review the refactored code in the output directory</li>
-                        <li>Check CODEBASE_RECOMMENDATIONS.md for improvement suggestions</li>
-                        <li>Review INTERVIEW_QUESTIONS.md for technical insights</li>
-                        <li>Test the refactored code to ensure functionality is preserved</li>
                     </ul>
                 </div>
             </div>
@@ -532,6 +593,22 @@
             }
         }
 
+        function downloadResults() {
+            // Simulate download - in real implementation, this would call your backend
+            addLog('📦 Preparing download...', 'info');
+            
+            // Create a mock download
+            const link = document.createElement('a');
+            link.href = '#';
+            link.download = 'refactored_codebase.zip';
+            
+            // In a real implementation, you would:
+            // link.href = '/api/download?output=' + encodeURIComponent(document.getElementById('outputDir').value);
+            
+            addLog('✅ Download started', 'success');
+            alert('Download functionality would trigger here.\n\nIn the real implementation, this will download a ZIP file of your refactored codebase.');
+        }
+
         function simulateProcessing() {
             const files = [
                 { name: 'main.py', icon: '🐍' },
@@ -573,15 +650,58 @@
         function showResults(files) {
             addLog('🎉 Processing complete!', 'success');
             
+            // Populate file list
             const fileList = document.getElementById('fileList');
             fileList.innerHTML = '';
             
             files.forEach(file => {
                 const li = document.createElement('li');
                 li.className = 'file-item';
-                li.innerHTML = `<span>${file.icon}</span> <span>${file.name}</span>`;
+                li.innerHTML = `${file.icon} ${file.name}`;
                 fileList.appendChild(li);
             });
+
+            // Populate recommendations
+            const recommendations = `
+                <h4>Overall Summary</h4>
+                <p>The codebase demonstrates good structure with clear separation of concerns. The agent implementation follows object-oriented principles and makes effective use of the Gemini API.</p>
+                
+                <h4>Key Recommendations</h4>
+                <ul>
+                    <li><strong>Error Handling:</strong> Consider adding more granular exception handling in API calls to distinguish between different failure modes (rate limits, invalid requests, network errors).</li>
+                    <li><strong>Configuration Management:</strong> The Config class is well-structured. Consider adding validation for user-provided configuration values to prevent runtime errors.</li>
+                    <li><strong>Code Reusability:</strong> Extract common patterns into utility functions, particularly for file operations and logging.</li>
+                    <li><strong>Testing:</strong> Add unit tests for core functionality, especially the RefactoringAgent class methods.</li>
+                    <li><strong>Documentation:</strong> Add more inline comments explaining complex logic, particularly in the API retry mechanism.</li>
+                </ul>
+
+                <h4>Security Considerations</h4>
+                <ul>
+                    <li>API keys are properly loaded from environment variables - good practice.</li>
+                    <li>Consider adding input validation for file paths to prevent directory traversal attacks.</li>
+                    <li>Implement rate limiting on the user side to prevent accidental API quota exhaustion.</li>
+                </ul>
+            `;
+            document.getElementById('recommendationsContent').innerHTML = recommendations;
+
+            // Populate interview questions
+            const questions = `
+                <h4>Question 1: Architecture & Design</h4>
+                <p>Can you explain the architectural decision behind separating the configuration into a dedicated Config class? What are the benefits of this approach, and how would you extend it to support multiple API providers?</p>
+
+                <h4>Question 2: Error Handling Strategy</h4>
+                <p>The code implements exponential backoff for API retries. Walk me through your reasoning for the retry strategy. How would you handle a scenario where the API consistently fails after all retries?</p>
+
+                <h4>Question 3: Code Quality & Refactoring</h4>
+                <p>Looking at the RefactoringAgent class, what code smells do you notice, if any? How would you refactor the run() method to improve testability and maintainability?</p>
+
+                <h4>Question 4: Scalability Concerns</h4>
+                <p>If this tool needed to handle extremely large codebases (1000+ files), what bottlenecks would you anticipate? Describe how you would modify the implementation to handle this scale.</p>
+
+                <h4>Question 5: Feature Extension</h4>
+                <p>A new requirement comes in: support for incremental refactoring where only changed files are processed. How would you implement this feature with minimal changes to the existing codebase?</p>
+            `;
+            document.getElementById('interviewContent').innerHTML = questions;
 
             document.getElementById('resultsSection').classList.add('active');
             document.getElementById('startBtn').disabled = false;
