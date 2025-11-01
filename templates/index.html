@@ -319,8 +319,12 @@
             line-height: 1.8;
             color: #d0d0d0;
             border: 1px solid rgba(102, 126, 234, 0.2);
+            white-space: pre-wrap;
         }
 
+        .recommendations-content h1,
+        .recommendations-content h2,
+        .recommendations-content h3,
         .recommendations-content h4 {
             color: #8b9fe8;
             margin-top: 20px;
@@ -419,6 +423,23 @@
             color: #8b9fe8;
             margin-bottom: 15px;
             font-size: 1.2em;
+        }
+
+        .markdown-content {
+            line-height: 1.8;
+        }
+
+        .markdown-content h1 { font-size: 1.8em; margin-top: 20px; }
+        .markdown-content h2 { font-size: 1.5em; margin-top: 18px; }
+        .markdown-content h3 { font-size: 1.3em; margin-top: 16px; }
+        .markdown-content h4 { font-size: 1.1em; margin-top: 14px; }
+        .markdown-content p { margin-bottom: 12px; }
+        .markdown-content strong { color: #a8b4f5; }
+        .markdown-content code {
+            background: rgba(102, 126, 234, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
         }
     </style>
 </head>
@@ -526,20 +547,20 @@
                     <h2>📦 Download Refactored Code</h2>
                     <p>Your refactored codebase is ready for download</p>
                     <button class="btn btn-download" onclick="downloadResults()">
-                        <span class="download-icon">⬇️</span> Download ZIP
+                        ⬇️ Download ZIP
                     </button>
                 </div>
 
-                <div class="result-card">
+                <div class="result-card" id="recommendationsCard" style="display:none;">
                     <h3>💡 Codebase Recommendations</h3>
-                    <div class="recommendations-content" id="recommendationsContent">
+                    <div class="recommendations-content markdown-content" id="recommendationsContent">
                         <p>Loading recommendations...</p>
                     </div>
                 </div>
 
-                <div class="result-card">
+                <div class="result-card" id="interviewCard" style="display:none;">
                     <h3>🎙️ Interview Questions</h3>
-                    <div class="recommendations-content" id="interviewContent">
+                    <div class="recommendations-content markdown-content" id="interviewContent">
                         <p>Loading interview questions...</p>
                     </div>
                 </div>
@@ -557,14 +578,22 @@
     <script>
         let startTime;
         let timerInterval;
+        let statusInterval;
 
-        function addLog(message, type = 'info') {
-            const logContainer = document.getElementById('statusLog');
-            const entry = document.createElement('div');
-            entry.className = `log-entry ${type}`;
-            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-            logContainer.appendChild(entry);
-            logContainer.scrollTop = logContainer.scrollHeight;
+        function simpleMarkdownToHtml(markdown) {
+            // Simple markdown converter
+            let html = markdown
+                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`(.*?)`/g, '<code>$1</code>')
+                .replace(/^\- (.*$)/gim, '<li>$1</li>')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+            
+            return '<p>' + html + '</p>';
         }
 
         function updateProgress(percent) {
@@ -577,6 +606,15 @@
             document.getElementById('filesProcessed').textContent = processed;
             document.getElementById('filesAnalyzed').textContent = analyzed;
             document.getElementById('filesRefactored').textContent = refactored;
+        }
+
+        function addLogFromBackend(log) {
+            const logContainer = document.getElementById('statusLog');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${log.type}`;
+            entry.textContent = `[${log.timestamp}] ${log.message}`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
         }
 
         function startTimer() {
@@ -593,122 +631,104 @@
             }
         }
 
-        function downloadResults() {
-            // Simulate download - in real implementation, this would call your backend
-            addLog('📦 Preparing download...', 'info');
-            
-            // Create a mock download
-            const link = document.createElement('a');
-            link.href = '#';
-            link.download = 'refactored_codebase.zip';
-            
-            // In a real implementation, you would:
-            // link.href = '/api/download?output=' + encodeURIComponent(document.getElementById('outputDir').value);
-            
-            addLog('✅ Download started', 'success');
-            alert('Download functionality would trigger here.\n\nIn the real implementation, this will download a ZIP file of your refactored codebase.');
+        function stopStatusPolling() {
+            if (statusInterval) {
+                clearInterval(statusInterval);
+            }
         }
 
-        function simulateProcessing() {
-            const files = [
-                { name: 'main.py', icon: '🐍' },
-                { name: 'agent.py', icon: '🐍' },
-                { name: 'config.py', icon: '🐍' },
-                { name: 'utils.py', icon: '🐍' },
-                { name: 'setup.py', icon: '🐍' }
-            ];
-
-            let step = 0;
-            const totalSteps = files.length * 2;
-
-            const interval = setInterval(() => {
-                if (step >= totalSteps) {
-                    clearInterval(interval);
-                    stopTimer();
-                    showResults(files);
-                    return;
+        function pollStatus() {
+            statusInterval = setInterval(async () => {
+                try {
+                    const response = await fetch('/api/status');
+                    const data = await response.json();
+                    
+                    updateStats(data.files_processed, data.files_analyzed, data.files_refactored);
+                    updateProgress(data.progress);
+                    
+                    // Add new logs
+                    if (data.logs && data.logs.length > 0) {
+                        const logContainer = document.getElementById('statusLog');
+                        logContainer.innerHTML = '';
+                        data.logs.forEach(log => addLogFromBackend(log));
+                    }
+                    
+                    // Check if completed
+                    if (data.status === 'completed') {
+                        stopTimer();
+                        stopStatusPolling();
+                        showResults(data);
+                    } else if (data.status === 'error') {
+                        stopTimer();
+                        stopStatusPolling();
+                        alert('Error: ' + (data.error || 'Unknown error occurred'));
+                        document.getElementById('startBtn').disabled = false;
+                        document.getElementById('startBtn').textContent = '🚀 Start Refactoring';
+                    }
+                } catch (error) {
+                    console.error('Error polling status:', error);
                 }
-
-                const fileIndex = Math.floor(step / 2);
-                const isAnalysis = step % 2 === 0;
-
-                if (isAnalysis) {
-                    addLog(`🔍 Analyzing: ${files[fileIndex].name}`, 'info');
-                    updateStats(fileIndex, fileIndex + 1, fileIndex);
-                } else {
-                    addLog(`✨ Refactoring: ${files[fileIndex].name}`, 'success');
-                    updateStats(fileIndex + 1, fileIndex + 1, fileIndex + 1);
-                }
-
-                const progress = Math.round(((step + 1) / totalSteps) * 100);
-                updateProgress(progress);
-
-                step++;
-            }, 1500);
+            }, 1000);
         }
 
-        function showResults(files) {
-            addLog('🎉 Processing complete!', 'success');
-            
+        function showResults(data) {
             // Populate file list
             const fileList = document.getElementById('fileList');
             fileList.innerHTML = '';
             
-            files.forEach(file => {
-                const li = document.createElement('li');
-                li.className = 'file-item';
-                li.innerHTML = `${file.icon} ${file.name}`;
-                fileList.appendChild(li);
-            });
+            if (data.processed_files && data.processed_files.length > 0) {
+                data.processed_files.forEach(file => {
+                    const li = document.createElement('li');
+                    li.className = 'file-item';
+                    li.innerHTML = `${file.icon} ${file.name}`;
+                    fileList.appendChild(li);
+                });
+            } else {
+                fileList.innerHTML = '<li class="file-item">No files processed</li>';
+            }
 
-            // Populate recommendations
-            const recommendations = `
-                <h4>Overall Summary</h4>
-                <p>The codebase demonstrates good structure with clear separation of concerns. The agent implementation follows object-oriented principles and makes effective use of the Gemini API.</p>
-                
-                <h4>Key Recommendations</h4>
-                <ul>
-                    <li><strong>Error Handling:</strong> Consider adding more granular exception handling in API calls to distinguish between different failure modes (rate limits, invalid requests, network errors).</li>
-                    <li><strong>Configuration Management:</strong> The Config class is well-structured. Consider adding validation for user-provided configuration values to prevent runtime errors.</li>
-                    <li><strong>Code Reusability:</strong> Extract common patterns into utility functions, particularly for file operations and logging.</li>
-                    <li><strong>Testing:</strong> Add unit tests for core functionality, especially the RefactoringAgent class methods.</li>
-                    <li><strong>Documentation:</strong> Add more inline comments explaining complex logic, particularly in the API retry mechanism.</li>
-                </ul>
+            // Show recommendations if available
+            if (data.recommendations) {
+                document.getElementById('recommendationsCard').style.display = 'block';
+                document.getElementById('recommendationsContent').innerHTML = simpleMarkdownToHtml(data.recommendations);
+            }
 
-                <h4>Security Considerations</h4>
-                <ul>
-                    <li>API keys are properly loaded from environment variables - good practice.</li>
-                    <li>Consider adding input validation for file paths to prevent directory traversal attacks.</li>
-                    <li>Implement rate limiting on the user side to prevent accidental API quota exhaustion.</li>
-                </ul>
-            `;
-            document.getElementById('recommendationsContent').innerHTML = recommendations;
-
-            // Populate interview questions
-            const questions = `
-                <h4>Question 1: Architecture & Design</h4>
-                <p>Can you explain the architectural decision behind separating the configuration into a dedicated Config class? What are the benefits of this approach, and how would you extend it to support multiple API providers?</p>
-
-                <h4>Question 2: Error Handling Strategy</h4>
-                <p>The code implements exponential backoff for API retries. Walk me through your reasoning for the retry strategy. How would you handle a scenario where the API consistently fails after all retries?</p>
-
-                <h4>Question 3: Code Quality & Refactoring</h4>
-                <p>Looking at the RefactoringAgent class, what code smells do you notice, if any? How would you refactor the run() method to improve testability and maintainability?</p>
-
-                <h4>Question 4: Scalability Concerns</h4>
-                <p>If this tool needed to handle extremely large codebases (1000+ files), what bottlenecks would you anticipate? Describe how you would modify the implementation to handle this scale.</p>
-
-                <h4>Question 5: Feature Extension</h4>
-                <p>A new requirement comes in: support for incremental refactoring where only changed files are processed. How would you implement this feature with minimal changes to the existing codebase?</p>
-            `;
-            document.getElementById('interviewContent').innerHTML = questions;
+            // Show interview questions if available
+            if (data.interview_questions) {
+                document.getElementById('interviewCard').style.display = 'block';
+                document.getElementById('interviewContent').innerHTML = simpleMarkdownToHtml(data.interview_questions);
+            }
 
             document.getElementById('resultsSection').classList.add('active');
             document.getElementById('startBtn').disabled = false;
             document.getElementById('startBtn').textContent = '🚀 Start New Refactoring';
         }
 
-        function startRefactoring() {
+        async function downloadResults() {
+            try {
+                const response = await fetch('/api/download');
+                
+                if (!response.ok) {
+                    alert('Download failed. Please ensure refactoring has completed.');
+                    return;
+                }
+                
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `refactored_codebase_${new Date().getTime()}.zip`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } catch (error) {
+                console.error('Download error:', error);
+                alert('Failed to download: ' + error.message);
+            }
+        }
+
+        async function startRefactoring() {
             const sourcePath = document.getElementById('sourcePath').value;
             
             if (!sourcePath) {
@@ -719,6 +739,8 @@
             // Reset UI
             document.getElementById('statusLog').innerHTML = '';
             document.getElementById('resultsSection').classList.remove('active');
+            document.getElementById('recommendationsCard').style.display = 'none';
+            document.getElementById('interviewCard').style.display = 'none';
             updateProgress(0);
             updateStats(0, 0, 0);
             
@@ -727,19 +749,39 @@
             document.getElementById('startBtn').disabled = true;
             document.getElementById('startBtn').textContent = '⏳ Processing...';
             
-            // Start
-            addLog('🚀 Starting codebase processing...', 'info');
-            addLog(`📂 Source: ${sourcePath}`, 'info');
-            addLog(`🤖 Using model: ${document.getElementById('model').value}`, 'info');
-            
+            // Start timer
             startTimer();
             
-            // Simulate processing (in real implementation, this would call your Python backend)
-            setTimeout(() => {
-                addLog('✅ Configuration validated', 'success');
-                addLog('📦 Dependencies loaded', 'success');
-                simulateProcessing();
-            }, 1000);
+            // Make API call
+            try {
+                const response = await fetch('/api/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        sourcePath: sourcePath,
+                        outputDir: document.getElementById('outputDir').value,
+                        model: document.getElementById('model').value,
+                        skipAnalysis: document.getElementById('skipAnalysis').checked,
+                        skipRefactoring: document.getElementById('skipRefactoring').checked,
+                        delay: parseInt(document.getElementById('delay').value)
+                    })
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to start refactoring');
+                }
+                
+                // Start polling for status
+                pollStatus();
+            } catch (error) {
+                alert('Error: ' + error.message);
+                stopTimer();
+                document.getElementById('startBtn').disabled = false;
+                document.getElementById('startBtn').textContent = '🚀 Start Refactoring';
+            }
         }
 
         // Prevent both checkboxes from being checked

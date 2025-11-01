@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Flask web application for the AI-Powered Codebase Refactoring Agent.
-This provides a web UI for the refactoring agent.
+This provides a web UI for the refactoring agent with download functionality.
 """
 
 import os
@@ -9,7 +9,9 @@ import sys
 import time
 import shutil
 import threading
-from flask import Flask, render_template, request, jsonify, send_from_directory
+import zipfile
+from io import BytesIO
+from flask import Flask, render_template, request, jsonify, send_file
 from flask_cors import CORS
 from dotenv import load_dotenv
 
@@ -34,7 +36,11 @@ processing_state = {
     'status': 'idle',
     'logs': [],
     'error': None,
-    'temp_dir': None
+    'temp_dir': None,
+    'output_dir': None,
+    'recommendations': None,
+    'interview_questions': None,
+    'processed_files': []
 }
 
 def add_log(message, log_type='info'):
@@ -45,6 +51,23 @@ def add_log(message, log_type='info'):
         'timestamp': time.strftime('%H:%M:%S')
     })
 
+def create_zip_file(source_dir):
+    """Create a ZIP file from the output directory."""
+    memory_file = BytesIO()
+    
+    with zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for root, dirs, files in os.walk(source_dir):
+            # Skip hidden directories
+            dirs[:] = [d for d in dirs if not d.startswith('.')]
+            
+            for file in files:
+                file_path = os.path.join(root, file)
+                arcname = os.path.relpath(file_path, source_dir)
+                zipf.write(file_path, arcname)
+    
+    memory_file.seek(0)
+    return memory_file
+
 def run_refactoring_task(source_path, output_dir, model, skip_analysis, skip_refactoring, delay):
     """Run the refactoring task in a background thread."""
     temp_dir = None
@@ -54,6 +77,10 @@ def run_refactoring_task(source_path, output_dir, model, skip_analysis, skip_ref
         processing_state['status'] = 'running'
         processing_state['error'] = None
         processing_state['logs'] = []
+        processing_state['output_dir'] = output_dir
+        processing_state['recommendations'] = None
+        processing_state['interview_questions'] = None
+        processing_state['processed_files'] = []
         
         add_log('🚀 Starting codebase processing...', 'info')
         
@@ -106,6 +133,11 @@ def run_refactoring_task(source_path, output_dir, model, skip_analysis, skip_ref
             add_log(f'🔍 Analyzing: {file_path}', 'info')
             result = original_analyze(file_path, code_content)
             processing_state['files_analyzed'] += 1
+            processing_state['processed_files'].append({
+                'name': os.path.basename(file_path),
+                'path': file_path,
+                'icon': Config.get_file_icon(os.path.splitext(file_path)[1])
+            })
             time.sleep(delay)
             return result
         
@@ -124,14 +156,28 @@ def run_refactoring_task(source_path, output_dir, model, skip_analysis, skip_ref
         add_log('⚙️ Processing files...', 'info')
         agent.run()
         
+        # Read recommendations if available
+        recommendations_path = os.path.join(output_dir, "CODEBASE_RECOMMENDATIONS.md")
+        if os.path.exists(recommendations_path):
+            add_log('📖 Reading recommendations...', 'info')
+            with open(recommendations_path, 'r', encoding='utf-8') as f:
+                processing_state['recommendations'] = f.read()
+        
         # Generate interview questions if analysis was performed
         if not skip_analysis and agent.analysis_results:
             add_log('🎙️ Generating interview questions...', 'info')
             agent.generate_interview_questions()
+            
+            # Read interview questions
+            questions_path = os.path.join(output_dir, "INTERVIEW_QUESTIONS.md")
+            if os.path.exists(questions_path):
+                with open(questions_path, 'r', encoding='utf-8') as f:
+                    processing_state['interview_questions'] = f.read()
         
         processing_state['progress'] = 100
         processing_state['status'] = 'completed'
         add_log('🎉 Processing complete!', 'success')
+        add_log('📦 Ready for download', 'success')
         
     except Exception as e:
         add_log(f'❌ Error: {str(e)}', 'error')
@@ -163,7 +209,7 @@ def start_refactoring():
     data = request.json
     source_path = data.get('sourcePath', '').strip()
     output_dir = data.get('outputDir', 'refactored_codebase')
-    model = data.get('model', 'gemini-1.5-flash-latest')
+    model = data.get('model', 'gemini-2.5-flash-lite')
     skip_analysis = data.get('skipAnalysis', False)
     skip_refactoring = data.get('skipRefactoring', False)
     delay = int(data.get('delay', 2))
@@ -200,8 +246,36 @@ def get_status():
         'current_file': processing_state['current_file'],
         'status': processing_state['status'],
         'logs': processing_state['logs'],
-        'error': processing_state['error']
+        'error': processing_state['error'],
+        'recommendations': processing_state['recommendations'],
+        'interview_questions': processing_state['interview_questions'],
+        'processed_files': processing_state['processed_files']
     })
+
+@app.route('/api/download', methods=['GET'])
+def download_refactored_code():
+    """Download the refactored codebase as a ZIP file."""
+    output_dir = processing_state.get('output_dir')
+    
+    if not output_dir or not os.path.exists(output_dir):
+        return jsonify({'error': 'No refactored code available for download'}), 404
+    
+    try:
+        # Create ZIP file in memory
+        memory_file = create_zip_file(output_dir)
+        
+        # Generate filename with timestamp
+        timestamp = time.strftime('%Y%m%d_%H%M%S')
+        filename = f'refactored_codebase_{timestamp}.zip'
+        
+        return send_file(
+            memory_file,
+            mimetype='application/zip',
+            as_attachment=True,
+            download_name=filename
+        )
+    except Exception as e:
+        return jsonify({'error': f'Failed to create download: {str(e)}'}), 500
 
 @app.route('/api/config', methods=['GET'])
 def get_config():
@@ -211,16 +285,11 @@ def get_config():
         'model': Config.GEMINI_MODEL,
         'supported_extensions': list(Config.SUPPORTED_EXTENSIONS),
         'models': [
-            'gemini-1.5-flash-latest',
-            'gemini-1.5-pro-latest',
+            'gemini-2.5-flash-lite',
+            'gemini-1.5-flash-8b',
             'gemini-pro'
         ]
     })
-
-@app.route('/static/<path:filename>')
-def static_files(filename):
-    """Serve static files."""
-    return send_from_directory('static', filename)
 
 def main():
     """Run the Flask application."""
@@ -230,6 +299,10 @@ def main():
     print(f"\n📍 Server starting on http://localhost:5000")
     print("🔑 Make sure GEMINI_API_KEY is set in your .env file")
     print("\n🌐 Open your browser and navigate to: http://localhost:5000")
+    print("\n📦 Features:")
+    print("  • Real-time progress tracking")
+    print("  • Download refactored code as ZIP")
+    print("  • View recommendations and interview questions")
     print("\nPress Ctrl+C to stop the server\n")
     
     app.run(debug=True, host='0.0.0.0', port=5000, use_reloader=False)
