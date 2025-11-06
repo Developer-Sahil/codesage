@@ -2,6 +2,7 @@
 """
 Flask web application for the AI-Powered Codebase Refactoring Agent.
 This provides a web UI for the refactoring agent with download functionality.
+Cloud Run compatible version.
 """
 
 import os
@@ -200,6 +201,11 @@ def index():
     """Serve the main page."""
     return render_template('index.html')
 
+@app.route('/health')
+def health():
+    """Health check endpoint for Cloud Run."""
+    return jsonify({'status': 'healthy', 'api_configured': bool(Config.GEMINI_API_KEY)}), 200
+
 @app.route('/api/start', methods=['POST'])
 def start_refactoring():
     """Start the refactoring process."""
@@ -293,19 +299,36 @@ def get_config():
 
 def main():
     """Run the Flask application."""
-    print("=" * 60)
-    print("🚀 AI Codebase Refactoring Agent - Web Interface")
-    print("=" * 60)
-    print(f"\n📍 Server starting on http://localhost:5000")
-    print("🔑 Make sure GEMINI_API_KEY is set in your .env file")
-    print("\n🌐 Open your browser and navigate to: http://localhost:5000")
-    print("\n📦 Features:")
-    print("  • Real-time progress tracking")
-    print("  • Download refactored code as ZIP")
-    print("  • View recommendations and interview questions")
-    print("\nPress Ctrl+C to stop the server\n")
+    # Get port from environment variable (Cloud Run sets this)
+    port = int(os.environ.get('PORT', 5000))
     
-    app.run(debug=True, host='0.0.0.0', port=5000, use_reloader=False)
+    # Check if running on Cloud Run
+    is_cloud_run = os.environ.get('K_SERVICE') is not None
+    
+    if is_cloud_run:
+        print("🌐 Running on Google Cloud Run")
+        print(f"📍 Port: {port}")
+        print(f"🔑 API Key configured: {bool(Config.GEMINI_API_KEY)}")
+    else:
+        print("=" * 60)
+        print("🚀 AI Codebase Refactoring Agent - Web Interface")
+        print("=" * 60)
+        print(f"\n📍 Server starting on http://localhost:{port}")
+        print("🔑 Make sure GEMINI_API_KEY is set in your .env file")
+        print(f"\n🌐 Open your browser and navigate to: http://localhost:{port}")
+        print("\n📦 Features:")
+        print("  • Real-time progress tracking")
+        print("  • Download refactored code as ZIP")
+        print("  • View recommendations and interview questions")
+        print("\nPress Ctrl+C to stop the server\n")
+    
+    # Run with different settings based on environment
+    app.run(
+        debug=not is_cloud_run,
+        host='0.0.0.0',
+        port=port,
+        use_reloader=False
+    )
 
 if __name__ == '__main__':
     main()

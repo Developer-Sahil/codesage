@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+*.egg-info/
+
+# Environment
+.env
+.env.local
+
+# Output directories
+refactored_codebase/
+temp_repo/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+README.md
+*.md
+
+# Tests
+test_*.py
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/
