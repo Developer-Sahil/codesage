@@ -82,6 +82,8 @@ def run_refactoring_task(source_path, output_dir, model, skip_analysis, skip_ref
         processing_state['recommendations'] = None
         processing_state['interview_questions'] = None
         processing_state['processed_files'] = []
+        processing_state['total_files'] = 0
+        processing_state['progress'] = 0
         
         add_log('🚀 Starting codebase processing...', 'info')
         
@@ -121,6 +123,23 @@ def run_refactoring_task(source_path, output_dir, model, skip_analysis, skip_ref
             add_log(f'🧹 Cleaning output directory', 'info')
             shutil.rmtree(output_dir)
         
+        # Count total files first
+        total_files = 0
+        for root, dirs, files in os.walk(source_path):
+            dirs[:] = [d for d in dirs if not d.startswith('.')]
+            for file in files:
+                if os.path.splitext(file)[1] in Config.SUPPORTED_EXTENSIONS:
+                    total_files += 1
+
+        processing_state['total_files'] = total_files
+        add_log(f'📊 Found {total_files} files to process', 'info')
+        
+        if total_files == 0:
+            add_log('⚠️ No supported files found', 'warning')
+            processing_state['status'] = 'completed'
+            processing_state['progress'] = 100
+            return
+        
         # Create agent with custom configuration
         Config.GEMINI_MODEL = model
         agent = RefactoringAgent(source_path, output_dir)
@@ -129,9 +148,21 @@ def run_refactoring_task(source_path, output_dir, model, skip_analysis, skip_ref
         original_analyze = agent.analyze_code
         original_refactor = agent.refactor_code
         
+        # Track which operation we're doing
+        files_completed = 0
+        
+        def update_progress():
+            """Update progress based on completed files."""
+            nonlocal files_completed
+            if processing_state['total_files'] > 0:
+                progress = int((files_completed / processing_state['total_files']) * 100)
+                processing_state['progress'] = min(progress, 99)  # Cap at 99% until fully complete
+                add_log(f'Progress: {processing_state["progress"]}%', 'info')
+
         def tracked_analyze(file_path, code_content):
+            nonlocal files_completed
             processing_state['current_file'] = file_path
-            add_log(f'🔍 Analyzing: {file_path}', 'info')
+            add_log(f'🔍 Analyzing: {os.path.basename(file_path)}', 'info')
             result = original_analyze(file_path, code_content)
             processing_state['files_analyzed'] += 1
             processing_state['processed_files'].append({
@@ -139,14 +170,27 @@ def run_refactoring_task(source_path, output_dir, model, skip_analysis, skip_ref
                 'path': file_path,
                 'icon': Config.get_file_icon(os.path.splitext(file_path)[1])
             })
+            
+            # Only update progress if we're not doing refactoring
+            if skip_refactoring:
+                files_completed += 1
+                update_progress()
+            
             time.sleep(delay)
             return result
-        
+
         def tracked_refactor(file_path, code_content):
-            add_log(f'✨ Refactoring: {file_path}', 'info')
+            nonlocal files_completed
+            processing_state['current_file'] = file_path
+            add_log(f'✨ Refactoring: {os.path.basename(file_path)}', 'info')
             result = original_refactor(file_path, code_content)
             processing_state['files_refactored'] += 1
             processing_state['files_processed'] += 1
+            
+            # Always update progress after refactoring (it's the final step)
+            files_completed += 1
+            update_progress()
+            
             time.sleep(delay)
             return result
         
@@ -195,7 +239,6 @@ def run_refactoring_task(source_path, output_dir, model, skip_analysis, skip_ref
                 shutil.rmtree(temp_dir)
             except Exception as e:
                 add_log(f'⚠️ Warning: Could not clean up temp directory: {e}', 'warning')
-
 @app.route('/')
 def index():
     """Serve the main page."""

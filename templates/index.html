@@ -146,15 +146,6 @@
             transform: none;
         }
 
-        .btn-success {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.5);
-        }
-
-        .btn-success:hover:not(:disabled) {
-            box-shadow: 0 6px 25px rgba(16, 185, 129, 0.7);
-        }
-
         .btn-download {
             background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             box-shadow: 0 4px 20px rgba(245, 158, 11, 0.5);
@@ -162,12 +153,6 @@
 
         .btn-download:hover:not(:disabled) {
             box-shadow: 0 6px 25px rgba(245, 158, 11, 0.7);
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
         }
 
         .progress-section {
@@ -184,26 +169,166 @@
             animation: fadeIn 0.5s;
         }
 
-        .progress-bar-container {
-            width: 100%;
-            height: 30px;
-            background: rgba(20, 20, 35, 0.8);
-            border-radius: 15px;
-            overflow: hidden;
-            margin-bottom: 20px;
-            border: 1px solid rgba(102, 126, 234, 0.3);
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            width: 0%;
-            transition: width 0.5s ease;
+        /* Loading Animation Container */
+        .loading-container {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: 600;
+            margin: 40px 0;
+            gap: 20px;
+        }
+
+        /* Atom Animation */
+        .atom-loader {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+
+        .atom-core {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+        }
+
+        .atom-orbit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .atom-orbit:nth-child(2) {
+            transform: translate(-50%, -50%) rotate(60deg);
+        }
+
+        .atom-orbit:nth-child(3) {
+            transform: translate(-50%, -50%) rotate(120deg);
+        }
+
+        .atom-electron {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #667eea;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.8);
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: orbit 2s linear infinite;
+        }
+
+        .atom-orbit:nth-child(2) .atom-electron {
+            animation-delay: -0.66s;
+            background: #764ba2;
+        }
+
+        .atom-orbit:nth-child(3) .atom-electron {
+            animation-delay: -1.33s;
+            background: #8b9fe8;
+        }
+
+        @keyframes orbit {
+            from {
+                transform: translateX(-50%) rotate(0deg) translateY(60px) rotate(0deg);
+            }
+            to {
+                transform: translateX(-50%) rotate(360deg) translateY(60px) rotate(-360deg);
+            }
+        }
+
+        /* Stop animation when complete */
+        .atom-loader.completed .atom-electron {
+            animation: none;
+        }
+
+        .cube-loader.completed .cube {
+            animation: none;
+        }
+
+        .cube-loader.completed .cube-cell {
+            animation: none;
+        }
+
+        /* Rubik's Cube Animation (Alternative - Hidden by Default) */
+        .cube-loader {
+            display: none; /* Switch to 'flex' to use cube instead */
+            width: 100px;
+            height: 100px;
+            perspective: 400px;
+        }
+
+        .cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotateCube 3s infinite ease-in-out;
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border: 2px solid rgba(102, 126, 234, 0.5);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 2px;
+            padding: 2px;
+        }
+
+        .cube-cell {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+            animation: cellPulse 1.5s infinite ease-in-out;
+        }
+
+        .cube-cell:nth-child(odd) {
+            animation-delay: 0.1s;
+        }
+
+        .cube-face.front { transform: rotateY(0deg) translateZ(50px); }
+        .cube-face.back { transform: rotateY(180deg) translateZ(50px); }
+        .cube-face.right { transform: rotateY(90deg) translateZ(50px); }
+        .cube-face.left { transform: rotateY(-90deg) translateZ(50px); }
+        .cube-face.top { transform: rotateX(90deg) translateZ(50px); }
+        .cube-face.bottom { transform: rotateX(-90deg) translateZ(50px); }
+
+        @keyframes rotateCube {
+            0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
+            25% { transform: rotateX(90deg) rotateY(90deg); }
+            50% { transform: rotateX(180deg) rotateY(180deg); }
+            75% { transform: rotateX(270deg) rotateY(270deg); }
+        }
+
+        @keyframes cellPulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .loading-text {
+            font-size: 1.1em;
+            color: #8b9fe8;
+            font-weight: 500;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
         }
 
         .status-log {
@@ -215,6 +340,7 @@
             font-family: 'Courier New', monospace;
             font-size: 14px;
             border: 1px solid rgba(102, 126, 234, 0.2);
+            margin-top: 30px;
         }
 
         .status-log::-webkit-scrollbar {
@@ -259,7 +385,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 15px;
-            margin-top: 20px;
+            margin-top: 30px;
         }
 
         .stat-card {
@@ -322,25 +448,6 @@
             white-space: pre-wrap;
         }
 
-        .recommendations-content h1,
-        .recommendations-content h2,
-        .recommendations-content h3,
-        .recommendations-content h4 {
-            color: #8b9fe8;
-            margin-top: 20px;
-            margin-bottom: 10px;
-        }
-
-        .recommendations-content ul {
-            padding-left: 25px;
-            margin-top: 10px;
-        }
-
-        .recommendations-content li {
-            margin-bottom: 10px;
-            color: #c0c0c0;
-        }
-
         .download-card {
             background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             color: white;
@@ -368,6 +475,18 @@
             border-radius: 8px;
             border-left: 3px solid #667eea;
             color: #d0d0d0;
+        }
+
+        .help-text {
+            font-size: 0.9em;
+            color: #808080;
+            margin-top: 5px;
+        }
+
+        .section-title {
+            color: #8b9fe8;
+            margin-bottom: 15px;
+            font-size: 1.2em;
         }
 
         @keyframes fadeInDown {
@@ -406,40 +525,6 @@
                 opacity: 1;
                 transform: translateX(0);
             }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .help-text {
-            font-size: 0.9em;
-            color: #808080;
-            margin-top: 5px;
-        }
-
-        .section-title {
-            color: #8b9fe8;
-            margin-bottom: 15px;
-            font-size: 1.2em;
-        }
-
-        .markdown-content {
-            line-height: 1.8;
-        }
-
-        .markdown-content h1 { font-size: 1.8em; margin-top: 20px; }
-        .markdown-content h2 { font-size: 1.5em; margin-top: 18px; }
-        .markdown-content h3 { font-size: 1.3em; margin-top: 16px; }
-        .markdown-content h4 { font-size: 1.1em; margin-top: 14px; }
-        .markdown-content p { margin-bottom: 12px; }
-        .markdown-content strong { color: #a8b4f5; }
-        .markdown-content code {
-            background: rgba(102, 126, 234, 0.2);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
         }
     </style>
 </head>
@@ -511,8 +596,62 @@
             <div class="progress-section" id="progressSection">
                 <h2 class="section-title">⚙️ Processing...</h2>
                 
-                <div class="progress-bar-container">
-                    <div class="progress-bar" id="progressBar">0%</div>
+                <!-- Loading Animation -->
+                <div class="loading-container">
+                    <!-- Atom Animation -->
+                    <div class="atom-loader">
+                        <div class="atom-orbit">
+                            <div class="atom-electron"></div>
+                        </div>
+                        <div class="atom-orbit">
+                            <div class="atom-electron"></div>
+                        </div>
+                        <div class="atom-orbit">
+                            <div class="atom-electron"></div>
+                        </div>
+                        <div class="atom-core"></div>
+                    </div>
+                    
+                    <!-- Rubik's Cube Animation (Alternative) -->
+                    <div class="cube-loader">
+                        <div class="cube">
+                            <div class="cube-face front">
+                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
+                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
+                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
+                            </div>
+                            <div class="cube-face back">
+                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
+                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
+                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
+                            </div>
+                            <div class="cube-face right">
+                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
+                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
+                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
+                            </div>
+                            <div class="cube-face left">
+                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
+                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
+                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
+                            </div>
+                            <div class="cube-face top">
+                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
+                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
+                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
+                            </div>
+                            <div class="cube-face bottom">
+                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
+                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
+                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="loading-text">
+                        <span>Processing your codebase...</span>
+                        <span id="progressPercent" style="margin-left: 10px; color: #667eea; font-weight: 600;">0%</span>
+                    </div>
                 </div>
 
                 <div class="stats-grid">
@@ -553,14 +692,14 @@
 
                 <div class="result-card" id="recommendationsCard" style="display:none;">
                     <h3>💡 Codebase Recommendations</h3>
-                    <div class="recommendations-content markdown-content" id="recommendationsContent">
+                    <div class="recommendations-content" id="recommendationsContent">
                         <p>Loading recommendations...</p>
                     </div>
                 </div>
 
                 <div class="result-card" id="interviewCard" style="display:none;">
                     <h3>🎙️ Interview Questions</h3>
-                    <div class="recommendations-content markdown-content" id="interviewContent">
+                    <div class="recommendations-content" id="interviewContent">
                         <p>Loading interview questions...</p>
                     </div>
                 </div>
@@ -581,7 +720,6 @@
         let statusInterval;
 
         function simpleMarkdownToHtml(markdown) {
-            // Simple markdown converter
             let html = markdown
                 .replace(/^### (.*$)/gim, '<h3>$1</h3>')
                 .replace(/^## (.*$)/gim, '<h2>$1</h2>')
@@ -594,12 +732,6 @@
                 .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
             
             return '<p>' + html + '</p>';
-        }
-
-        function updateProgress(percent) {
-            const bar = document.getElementById('progressBar');
-            bar.style.width = percent + '%';
-            bar.textContent = percent + '%';
         }
 
         function updateStats(processed, analyzed, refactored) {
@@ -644,16 +776,24 @@
                     const data = await response.json();
                     
                     updateStats(data.files_processed, data.files_analyzed, data.files_refactored);
-                    updateProgress(data.progress);
                     
-                    // Add new logs
+                    // Update progress percentage
+                    if (data.progress !== undefined) {
+                        document.getElementById('progressPercent').textContent = Math.round(data.progress) + '%';
+                        
+                        // Stop animation when 100%
+                        if (data.progress >= 100) {
+                            document.querySelector('.atom-loader').classList.add('completed');
+                            document.querySelector('.cube-loader').classList.add('completed');
+                        }
+                    }
+                    
                     if (data.logs && data.logs.length > 0) {
                         const logContainer = document.getElementById('statusLog');
                         logContainer.innerHTML = '';
                         data.logs.forEach(log => addLogFromBackend(log));
                     }
                     
-                    // Check if completed
                     if (data.status === 'completed') {
                         stopTimer();
                         stopStatusPolling();
@@ -672,7 +812,6 @@
         }
 
         function showResults(data) {
-            // Populate file list
             const fileList = document.getElementById('fileList');
             fileList.innerHTML = '';
             
@@ -687,13 +826,11 @@
                 fileList.innerHTML = '<li class="file-item">No files processed</li>';
             }
 
-            // Show recommendations if available
             if (data.recommendations) {
                 document.getElementById('recommendationsCard').style.display = 'block';
                 document.getElementById('recommendationsContent').innerHTML = simpleMarkdownToHtml(data.recommendations);
             }
 
-            // Show interview questions if available
             if (data.interview_questions) {
                 document.getElementById('interviewCard').style.display = 'block';
                 document.getElementById('interviewContent').innerHTML = simpleMarkdownToHtml(data.interview_questions);
@@ -736,23 +873,24 @@
                 return;
             }
 
-            // Reset UI
             document.getElementById('statusLog').innerHTML = '';
             document.getElementById('resultsSection').classList.remove('active');
             document.getElementById('recommendationsCard').style.display = 'none';
             document.getElementById('interviewCard').style.display = 'none';
-            updateProgress(0);
+            document.getElementById('progressPercent').textContent = '0%';
+            
+            // Reset animation
+            document.querySelector('.atom-loader').classList.remove('completed');
+            document.querySelector('.cube-loader').classList.remove('completed');
+            
             updateStats(0, 0, 0);
             
-            // Show progress section
             document.getElementById('progressSection').classList.add('active');
             document.getElementById('startBtn').disabled = true;
             document.getElementById('startBtn').textContent = '⏳ Processing...';
             
-            // Start timer
             startTimer();
             
-            // Make API call
             try {
                 const response = await fetch('/api/start', {
                     method: 'POST',
@@ -774,7 +912,6 @@
                     throw new Error(error.error || 'Failed to start refactoring');
                 }
                 
-                // Start polling for status
                 pollStatus();
             } catch (error) {
                 alert('Error: ' + error.message);
@@ -784,7 +921,6 @@
             }
         }
 
-        // Prevent both checkboxes from being checked
         document.getElementById('skipAnalysis').addEventListener('change', function() {
             if (this.checked) {
                 document.getElementById('skipRefactoring').checked = false;
@@ -799,3 +935,4 @@
     </script>
 </body>
 </html>
+                
