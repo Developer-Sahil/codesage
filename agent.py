@@ -6,6 +6,10 @@ import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 from utils import extract_code_from_markdown
 from config import Config
+import openai
+import anthropic
+from groq import Groq
+
 
 class RefactoringAgent:
     """
@@ -24,45 +28,66 @@ class RefactoringAgent:
             safety_settings=Config.GEMINI_SAFETY_SETTINGS
         )
 
-    def _call_gemini_api(self, prompt: str, system_prompt: str, max_retries: int = None) -> str:
-        """Generic method to call the Gemini API and handle potential errors."""
-        if max_retries is None:
-            max_retries = Config.GEMINI_MAX_RETRIES
-            
-        # Combine system prompt and user prompt
-        combined_prompt = f"{system_prompt}\n\nUser Request:\n{prompt}"
-        
-        for attempt in range(max_retries):
-            try:
-                response = self.model.generate_content(
-                    combined_prompt,
-                    request_options={"timeout": Config.GEMINI_REQUEST_TIMEOUT}
-                )
-                
-                # Check if response was blocked
-                if response.candidates[0].finish_reason.name == "SAFETY":
-                    print(f"⚠️ Response blocked by safety filters. Attempt {attempt + 1}")
-                    if attempt == max_retries - 1:
-                        return "Error: Response blocked by safety filters."
-                    continue
-                
-                return response.text
-                
-            except Exception as e:
-                print(f"⚠️ Attempt {attempt + 1} failed: {str(e)}")
-                if "quota" in str(e).lower() or "rate" in str(e).lower():
-                    print("⏳ Rate limit detected. Waiting 60 seconds...")
-                    time.sleep(60)
-                elif attempt < max_retries - 1:
-                    # Wait before retrying
-                    wait_time = (attempt + 1) * 2  # Exponential backoff
-                    print(f"⏳ Waiting {wait_time} seconds before retry...")
-                    time.sleep(wait_time)
-                else:
-                    print(f"❌ All attempts failed. API call unsuccessful.")
-                    return f"Error: Could not get a response from the API after {max_retries} attempts. Last error: {str(e)}"
-        
-        return "Error: Unexpected error occurred."
+    def _call_model_api(self, prompt: str, system_prompt: str) -> str:
+        model = Config.GEMINI_MODEL
+
+        # =====================
+        # 🧠 GEMINI
+        # =====================
+        if "gemini" in model:
+            genai.configure(api_key=Config.GEMINI_API_KEY)
+            response = self.model.generate_content(
+                f"{system_prompt}\n\nUser Request:\n{prompt}",
+                request_options={"timeout": Config.GEMINI_REQUEST_TIMEOUT}
+            )
+            return response.text
+
+        # =====================
+        # 🧠 GPT-4o (OpenAI)
+        # =====================
+        elif "gpt" in model:
+            openai.api_key = Config.OPENAI_API_KEY
+            response = openai.chat.completions.create(
+                model=model,  # "gpt-4o" or "gpt-4-turbo"
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.2
+            )
+            return response.choices[0].message.content
+
+        # =====================
+        # 🧠 Claude (Anthropic)
+        # =====================
+        elif "claude" in model:
+            client = anthropic.Anthropic(api_key=Config.ANTHROPIC_API_KEY)
+            response = client.messages.create(
+                model=model,  # e.g. "claude-3-sonnet-20240229"
+                max_tokens=2000,
+                system=system_prompt,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            return response.content[0].text
+
+        # =====================
+        # 🧠 Grok / Groq API
+        # =====================
+        elif "grok" in model:
+            client = Groq(api_key=Config.GROQ_API_KEY)
+            completion = client.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": prompt}
+                ]
+            )
+            return completion.choices[0].message.content
+
+        else:
+            raise ValueError(f"❌ Unsupported model: {model}")
+
+    
 
     def _is_supported_file(self, file_name: str) -> bool:
         """Check if a file has a supported extension."""
@@ -89,7 +114,7 @@ class RefactoringAgent:
         3. **Code Smells:** List up to 3 major code smells you identify (e.g., long method, duplicate code, large class).
         4. **Brief Summary:** A one-sentence summary of the code's purpose and quality.
         """
-        analysis = self._call_gemini_api(prompt, Config.ANALYSIS_SYSTEM_PROMPT)
+        analysis = self._call_model_api(prompt, Config.ANALYSIS_SYSTEM_PROMPT)
         print("✅ Analysis complete.")
         return analysis
 
@@ -111,7 +136,7 @@ class RefactoringAgent:
         {code_content}
         ```
         """
-        refactored_content = self._call_gemini_api(prompt, Config.REFACTORING_SYSTEM_PROMPT)
+        refactored_content = self._call_model_api(prompt, Config.REFACTORING_SYSTEM_PROMPT)
         extracted_code = extract_code_from_markdown(refactored_content)
         
         # If extraction failed or returned empty, use original code
@@ -128,7 +153,7 @@ class RefactoringAgent:
         """
         print(f"🚀 Starting codebase processing for: {self.source_dir}")
         print(f"💾 Output will be saved to: {self.output_dir}")
-        print(f"🤖 Using Gemini model: {Config.GEMINI_MODEL}")
+        print(f"🤖 Using LLM model: {Config.GEMINI_MODEL}")
         
         # Create output directory
         os.makedirs(self.output_dir, exist_ok=True)
@@ -215,7 +240,7 @@ class RefactoringAgent:
         1. **Overall Summary:** A brief paragraph about the general state of the codebase.
         2. **Key Recommendations:** A bulleted list of the top 3-5 most impactful recommendations.
         """
-        recommendations = self._call_gemini_api(prompt, Config.RECOMMENDATIONS_SYSTEM_PROMPT)
+        recommendations = self._call_model_api(prompt, Config.RECOMMENDATIONS_SYSTEM_PROMPT)
         print(recommendations)
         
         # Save recommendations to a file
@@ -256,7 +281,7 @@ class RefactoringAgent:
         
         Format the output clearly with headings for each question.
         """
-        questions = self._call_gemini_api(prompt, Config.INTERVIEW_QUESTIONS_SYSTEM_PROMPT)
+        questions = self._call_model_api(prompt, Config.INTERVIEW_QUESTIONS_SYSTEM_PROMPT)
         print(questions)
         
         # Save questions to a file

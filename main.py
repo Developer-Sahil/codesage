@@ -36,9 +36,9 @@ Examples:
     )
     parser.add_argument(
         "--model",
-        choices=["gemini-2.5-flash-lite", "gemini-1.5-flash-8b", "gemini-pro", "gemini-pro-vision"],
-        default="gemini-2.5-flash-lite", 
-        help="The Gemini model to use for all API calls. Defaults to 'gemini-2.5-flash-lite'."
+        choices=Config.SUPPORTED_MODELS,
+        default="gemini-2.5-flash-lite",
+        help="Choose the model to use for refactoring"
     )
     parser.add_argument(
         "--skip-analysis",
@@ -56,6 +56,8 @@ Examples:
         default=2,
         help="Delay in seconds between API calls to respect rate limits. Default: 2"
     )
+    
+ 
     
     args = parser.parse_args()
 
@@ -118,7 +120,7 @@ Examples:
             print("⚠️ Skipping refactoring phase as requested.")
             # TODO: Implement analysis-only mode
         
-        print(f"🤖 Using Gemini model: {Config.GEMINI_MODEL}")
+        print(f"🤖 Using LLM model: {Config.GEMINI_MODEL}")
         print(f"⏱️ Rate limit delay: {args.delay} seconds between requests")
         
         # Run the main process
