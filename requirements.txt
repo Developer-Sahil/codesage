@@ -3,5 +3,6 @@ python-dotenv
 flask
 flask-cors
 gunicorn
-flask_cors
-openai>=1.0.0
+openai
+anthropic
+groq
