@@ -23,7 +23,7 @@ from config import Config
 # Load environment variables
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 CORS(app)
 
 # Global state for tracking progress

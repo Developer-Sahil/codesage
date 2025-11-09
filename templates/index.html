@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Codesage - AI Codebase Refactoring Agent</title>
+    <title>CodeSage - AI Codebase Refactoring</title>
     <style>
         * {
             margin: 0;
@@ -12,156 +12,291 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
             min-height: 100vh;
-            padding: 20px;
-            color: #e0e0e0;
+            color: #2d3748;
         }
 
+        /* Header Section */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-placeholder {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .logo-text h1 {
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .logo-text p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Container */
         .container {
             max-width: 1400px;
             margin: 0 auto;
+            padding: 40px;
         }
 
-        header {
-            text-align: center;
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, #f8f9ff 0%, #fff5f7 100%);
+            border-radius: 30px;
+            padding: 60px;
             margin-bottom: 40px;
-            animation: fadeInDown 0.8s ease-out;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 60px;
         }
 
-        h1 {
-            font-size: 2.8em;
-            margin-bottom: 10px;
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 800;
+            color: #1a202c;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .hero-title span {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        .subtitle {
-            font-size: 1.1em;
-            color: #a0a0a0;
-        }
-
-        .main-card {
-            background: rgba(30, 30, 50, 0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        .input-section {
+        .hero-subtitle {
+            font-size: 20px;
+            color: #718096;
             margin-bottom: 30px;
         }
 
-        .input-group {
-            margin-bottom: 20px;
+        .hero-image-container {
+            position: relative;
+            z-index: 1;
+            flex-shrink: 0;
+            width: 400px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #b0b0b0;
+        .hero-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            animation: float 6s ease-in-out infinite;
+            filter: drop-shadow(0 10px 30px rgba(102, 126, 234, 0.2));
         }
 
-        input[type="text"],
-        input[type="number"],
-        select {
-            width: 100%;
-            padding: 14px 18px;
-            background: rgba(20, 20, 35, 0.6);
-            border: 2px solid rgba(102, 126, 234, 0.3);
-            border-radius: 12px;
-            font-size: 16px;
-            color: #e0e0e0;
-            transition: all 0.3s;
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) translateX(0px) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-15px) translateX(5px) rotate(1deg);
+            }
+            50% {
+                transform: translateY(-10px) translateX(-5px) rotate(-1deg);
+            }
+            75% {
+                transform: translateY(-20px) translateX(3px) rotate(0.5deg);
+            }
         }
 
-        input[type="text"]:focus,
-        input[type="number"]:focus,
-        select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
-            background: rgba(20, 20, 35, 0.8);
+        /* Form Section */
+        .form-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
         }
 
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .checkbox-group {
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 25px;
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 12px;
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-input,
+        .form-select {
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            color: #2d3748;
+            transition: all 0.3s ease;
+            background: #f7fafc;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #a0aec0;
+            margin-top: 6px;
+        }
+
+        /* Checkbox Options */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .checkbox-option {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
             cursor: pointer;
-            transition: all 0.3s;
-            border: 1px solid rgba(102, 126, 234, 0.2);
+            transition: all 0.3s ease;
         }
 
-        .checkbox-group:hover {
-            background: rgba(102, 126, 234, 0.2);
-            border-color: rgba(102, 126, 234, 0.4);
+        .checkbox-option:hover {
+            background: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
         }
 
-        input[type="checkbox"] {
+        .checkbox-option input[type="checkbox"] {
             width: 20px;
             height: 20px;
             cursor: pointer;
             accent-color: #667eea;
         }
 
-        .btn {
+        .checkbox-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2d3748;
+            cursor: pointer;
+        }
+
+        /* Button */
+        .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 16px 40px;
+            padding: 18px 50px;
             font-size: 18px;
-            font-weight: 600;
-            border-radius: 12px;
+            font-weight: 700;
+            border-radius: 14px;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.7);
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.45);
         }
 
-        .btn:disabled {
-            opacity: 0.5;
+        .btn-primary:disabled {
+            opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
 
-        .btn-download {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.5);
-        }
-
-        .btn-download:hover:not(:disabled) {
-            box-shadow: 0 6px 25px rgba(245, 158, 11, 0.7);
-        }
-
+        /* Progress Section */
         .progress-section {
             display: none;
-            margin-top: 30px;
-            padding: 30px;
-            background: rgba(20, 20, 35, 0.6);
-            border-radius: 15px;
-            border: 1px solid rgba(102, 126, 234, 0.2);
         }
 
         .progress-section.active {
@@ -169,7 +304,6 @@
             animation: fadeIn 0.5s;
         }
 
-        /* Loading Animation Container */
         .loading-container {
             display: flex;
             flex-direction: column;
@@ -179,7 +313,6 @@
             gap: 20px;
         }
 
-        /* Atom Animation */
         .atom-loader {
             position: relative;
             width: 120px;
@@ -249,80 +382,14 @@
             }
         }
 
-        /* Stop animation when complete */
         .atom-loader.completed .atom-electron {
             animation: none;
         }
 
-        .cube-loader.completed .cube {
-            animation: none;
-        }
-
-        .cube-loader.completed .cube-cell {
-            animation: none;
-        }
-
-        /* Rubik's Cube Animation (Alternative - Hidden by Default) */
-        .cube-loader {
-            display: none; /* Switch to 'flex' to use cube instead */
-            width: 100px;
-            height: 100px;
-            perspective: 400px;
-        }
-
-        .cube {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            animation: rotateCube 3s infinite ease-in-out;
-        }
-
-        .cube-face {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            border: 2px solid rgba(102, 126, 234, 0.5);
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            gap: 2px;
-            padding: 2px;
-        }
-
-        .cube-cell {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 2px;
-            animation: cellPulse 1.5s infinite ease-in-out;
-        }
-
-        .cube-cell:nth-child(odd) {
-            animation-delay: 0.1s;
-        }
-
-        .cube-face.front { transform: rotateY(0deg) translateZ(50px); }
-        .cube-face.back { transform: rotateY(180deg) translateZ(50px); }
-        .cube-face.right { transform: rotateY(90deg) translateZ(50px); }
-        .cube-face.left { transform: rotateY(-90deg) translateZ(50px); }
-        .cube-face.top { transform: rotateX(90deg) translateZ(50px); }
-        .cube-face.bottom { transform: rotateX(-90deg) translateZ(50px); }
-
-        @keyframes rotateCube {
-            0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
-            25% { transform: rotateX(90deg) rotateY(90deg); }
-            50% { transform: rotateX(180deg) rotateY(180deg); }
-            75% { transform: rotateX(270deg) rotateY(270deg); }
-        }
-
-        @keyframes cellPulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
-        }
-
         .loading-text {
-            font-size: 1.1em;
-            color: #8b9fe8;
-            font-weight: 500;
+            font-size: 18px;
+            color: #4a5568;
+            font-weight: 600;
             animation: pulse 2s ease-in-out infinite;
         }
 
@@ -331,16 +398,58 @@
             50% { opacity: 1; }
         }
 
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 2px solid #f7fafc;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            border-color: #667eea;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #718096;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Status Log */
         .status-log {
-            background: rgba(10, 10, 20, 0.8);
-            border-radius: 10px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
             padding: 20px;
             max-height: 300px;
             overflow-y: auto;
             font-family: 'Courier New', monospace;
-            font-size: 14px;
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            margin-top: 30px;
+            font-size: 13px;
         }
 
         .status-log::-webkit-scrollbar {
@@ -348,72 +457,48 @@
         }
 
         .status-log::-webkit-scrollbar-track {
-            background: rgba(20, 20, 35, 0.5);
+            background: #e2e8f0;
             border-radius: 4px;
         }
 
         .status-log::-webkit-scrollbar-thumb {
-            background: rgba(102, 126, 234, 0.5);
+            background: #cbd5e0;
             border-radius: 4px;
         }
 
+        .status-log::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+
         .log-entry {
-            padding: 8px;
-            margin-bottom: 5px;
-            border-left: 3px solid #667eea;
-            padding-left: 12px;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-left: 4px solid #667eea;
+            padding-left: 15px;
             animation: slideInLeft 0.3s;
-            color: #c0c0c0;
+            color: #2d3748;
+            background: white;
+            border-radius: 8px;
         }
 
         .log-entry.success {
-            border-left-color: #10b981;
-            color: #6ee7b7;
+            border-left-color: #48bb78;
+            background: #f0fff4;
         }
 
         .log-entry.error {
-            border-left-color: #ef4444;
-            color: #fca5a5;
+            border-left-color: #f56565;
+            background: #fff5f5;
         }
 
         .log-entry.warning {
-            border-left-color: #f59e0b;
-            color: #fcd34d;
+            border-left-color: #ed8936;
+            background: #fffaf0;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .stat-card {
-            background: rgba(102, 126, 234, 0.1);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid rgba(102, 126, 234, 0.3);
-        }
-
-        .stat-value {
-            font-size: 2em;
-            font-weight: bold;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 0.9em;
-            color: #a0a0a0;
-        }
-
+        /* Results Section */
         .results-section {
             display: none;
-            margin-top: 30px;
         }
 
         .results-section.active {
@@ -421,94 +506,192 @@
             animation: fadeIn 0.5s;
         }
 
+        .download-banner {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(72, 187, 120, 0.3);
+        }
+
+        .download-banner h2 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .download-banner p {
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.95;
+        }
+
+        .btn-download {
+            background: white;
+            color: #38a169;
+            border: none;
+            padding: 16px 40px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
         .result-card {
-            background: rgba(20, 20, 35, 0.6);
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(102, 126, 234, 0.2);
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            border: 2px solid #f7fafc;
         }
 
         .result-card h3 {
-            color: #667eea;
-            margin-bottom: 15px;
+            color: #2d3748;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 1.4em;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
         }
 
-        .recommendations-content {
-            background: rgba(10, 10, 20, 0.6);
-            padding: 20px;
-            border-radius: 10px;
-            line-height: 1.8;
-            color: #d0d0d0;
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            white-space: pre-wrap;
+        .result-card h3::before {
+            content: '';
+            width: 6px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
         }
 
-        .download-card {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
+        /* Formatted content display */
+        .formatted-content {
+            background: #f7fafc;
             padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 25px rgba(245, 158, 11, 0.4);
+            border-radius: 16px;
+            line-height: 1.8;
+            color: #2d3748;
+            border: 2px solid #e2e8f0;
         }
 
-        .download-card h2 {
-            margin-bottom: 15px;
-            font-size: 1.8em;
+        .formatted-content h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1a202c;
+            margin: 25px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
         }
 
+        .formatted-content h1:first-child {
+            margin-top: 0;
+        }
+
+        .formatted-content h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 20px 0 12px 0;
+            padding-left: 15px;
+            border-left: 4px solid #764ba2;
+        }
+
+        .formatted-content h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #4a5568;
+            margin: 15px 0 10px 0;
+        }
+
+        .formatted-content p {
+            margin: 12px 0;
+            color: #4a5568;
+        }
+
+        .formatted-content strong {
+            color: #2d3748;
+            font-weight: 700;
+        }
+
+        .formatted-content em {
+            color: #667eea;
+            font-style: italic;
+        }
+
+        .formatted-content code {
+            background: #edf2f7;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            color: #667eea;
+            font-size: 14px;
+        }
+
+        .formatted-content ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 15px 0;
+        }
+
+        .formatted-content li {
+            padding: 12px 20px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: relative;
+            padding-left: 45px;
+        }
+
+        .formatted-content li::before {
+            content: '✓';
+            position: absolute;
+            left: 15px;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* File List */
         .file-list {
             list-style: none;
             padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
         }
 
         .file-item {
-            padding: 10px;
-            margin-bottom: 5px;
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 8px;
-            border-left: 3px solid #667eea;
-            color: #d0d0d0;
+            padding: 16px 20px;
+            background: #f7fafc;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            color: #2d3748;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .help-text {
-            font-size: 0.9em;
-            color: #808080;
-            margin-top: 5px;
-        }
-
-        .section-title {
-            color: #8b9fe8;
-            margin-bottom: 15px;
-            font-size: 1.2em;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .file-item:hover {
+            background: white;
+            border-color: #667eea;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
         }
 
         @keyframes fadeIn {
@@ -526,190 +709,237 @@
                 transform: translateX(0);
             }
         }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .hero-section {
+                padding: 40px 30px;
+                flex-direction: column;
+                gap: 40px;
+            }
+
+            .hero-content {
+                max-width: 100%;
+            }
+
+            .hero-title {
+                font-size: 36px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+            }
+
+            .hero-image-container {
+                width: 100%;
+                max-width: 350px;
+                height: 350px;
+                order: 2;
+            }
+
+            .form-card {
+                padding: 25px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🤖 CodeSage</h1>
-            <p class="subtitle">Powered by Google Gemini AI</p>
-        </header>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-placeholder">
+                    <img src="{{ url_for('static', filename='images/codesage_nobg.png') }}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+                <div class="logo-text">
+                    <h1>CodeSage</h1>
+                    <p>Powered by Google Gemini AI</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <div class="main-card">
-            <div class="input-section">
-                <div class="input-group">
-                    <label for="sourcePath">📂 Source Path or GitHub URL</label>
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Transform Your Codebase with <span>AI-Powered</span> Intelligence
+                </h1>
+                <p class="hero-subtitle">
+                    Analyze, refactor, and optimize your code automatically. Get instant recommendations, improve code quality, and save hours of manual work.
+                </p>
+            </div>
+            <div class="hero-image-container">
+                <!-- <img src="static/images/codesage.png" alt="CodeSage AI" class="hero-image"> -->
+                 <img src="{{ url_for('static', filename='images/codesage_nobg.png') }}" alt="CodeSage AI" class="hero-image">
+                <!-- Replace with your actual image: <img src="your-hero-image.png" alt="CodeSage AI" class="hero-image"> -->
+            </div>
+        </div>
+
+        <!-- Form Section -->
+        <div class="form-card">
+            <h2 class="section-title">⚙️ Configure Your Project</h2>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label" for="sourcePath">
+                        📂 Source Path or GitHub URL
+                    </label>
                     <input 
                         type="text" 
                         id="sourcePath" 
+                        class="form-input"
                         placeholder="e.g., /path/to/project or https://github.com/user/repo.git"
                     >
                     <p class="help-text">Enter a local directory path or a public GitHub repository URL</p>
                 </div>
 
-                <div class="input-group">
-                    <label for="outputDir">💾 Output Directory</label>
+                <div class="form-group">
+                    <label class="form-label" for="outputDir">
+                        💾 Output Directory
+                    </label>
                     <input 
                         type="text" 
                         id="outputDir" 
+                        class="form-input"
                         placeholder="refactored_codebase"
                         value="refactored_codebase"
                     >
+                    <p class="help-text">Where to save your refactored code</p>
                 </div>
 
-                <div class="input-group">
-                    <label for="model">🧠 Gemini Model</label>
-                    <select id="model">
+                <div class="form-group">
+                    <label class="form-label" for="model">
+                        🧠 AI Model
+                    </label>
+                    <select id="model" class="form-select">
                         <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash Lite (Fastest)</option>
                         <option value="gemini-1.5-flash-8b">Gemini 1.5 Flash 8B</option>
                         <option value="gemini-pro">Gemini Pro (Legacy)</option>
                     </select>
                 </div>
 
-                <div class="input-group">
-                    <label for="delay">⏱️ API Delay (seconds)</label>
+                <div class="form-group">
+                    <label class="form-label" for="delay">
+                        ⏱️ API Delay (seconds)
+                    </label>
                     <input 
                         type="text" 
                         id="delay" 
+                        class="form-input"
                         placeholder="2"
                         value="2"
                     >
                     <p class="help-text">Delay between API calls to respect rate limits</p>
                 </div>
+            </div>
 
-                <div class="options-grid">
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="skipAnalysis">
-                        <label for="skipAnalysis" style="margin: 0;">Skip Analysis</label>
-                    </div>
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="skipRefactoring">
-                        <label for="skipRefactoring" style="margin: 0;">Skip Refactoring</label>
-                    </div>
+            <div class="checkbox-grid">
+                <div class="checkbox-option">
+                    <input type="checkbox" id="skipAnalysis">
+                    <label class="checkbox-label" for="skipAnalysis">Skip Analysis Phase</label>
                 </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="skipRefactoring">
+                    <label class="checkbox-label" for="skipRefactoring">Skip Refactoring Phase</label>
+                </div>
+            </div>
 
-                <button class="btn" id="startBtn" onclick="startRefactoring()">
-                    🚀 Start Refactoring
+            <button class="btn-primary" id="startBtn" onclick="startRefactoring()">
+                <span>🚀</span> Start Refactoring
+            </button>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section form-card" id="progressSection">
+            <h2 class="section-title">⚙️ Processing Your Codebase</h2>
+            
+            <div class="loading-container">
+                <div class="atom-loader">
+                    <div class="atom-orbit">
+                        <div class="atom-electron"></div>
+                    </div>
+                    <div class="atom-orbit">
+                        <div class="atom-electron"></div>
+                    </div>
+                    <div class="atom-orbit">
+                        <div class="atom-electron"></div>
+                    </div>
+                    <div class="atom-core"></div>
+                </div>
+                
+                <div class="loading-text">
+                    <span>Processing your codebase...</span>
+                    <span id="progressPercent" style="margin-left: 10px; color: #667eea; font-weight: 800;">0%</span>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="filesProcessed">0</div>
+                    <div class="stat-label">Files Processed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="filesAnalyzed">0</div>
+                    <div class="stat-label">Files Analyzed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="filesRefactored">0</div>
+                    <div class="stat-label">Files Refactored</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="timeElapsed">0s</div>
+                    <div class="stat-label">Time Elapsed</div>
+                </div>
+            </div>
+
+            <h3 class="section-title" style="margin-top: 25px;">📋 Status Log</h3>
+            <div class="status-log" id="statusLog">
+                <div class="log-entry">Waiting to start...</div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="download-banner">
+                <h2>🎉 Refactoring Complete!</h2>
+                <p>Your optimized codebase is ready for download</p>
+                <button class="btn-download" onclick="downloadResults()">
+                    <span>⬇️</span> Download Refactored Code
                 </button>
             </div>
 
-            <div class="progress-section" id="progressSection">
-                <h2 class="section-title">⚙️ Processing...</h2>
-                
-                <!-- Loading Animation -->
-                <div class="loading-container">
-                    <!-- Atom Animation -->
-                    <div class="atom-loader">
-                        <div class="atom-orbit">
-                            <div class="atom-electron"></div>
-                        </div>
-                        <div class="atom-orbit">
-                            <div class="atom-electron"></div>
-                        </div>
-                        <div class="atom-orbit">
-                            <div class="atom-electron"></div>
-                        </div>
-                        <div class="atom-core"></div>
-                    </div>
-                    
-                    <!-- Rubik's Cube Animation (Alternative) -->
-                    <div class="cube-loader">
-                        <div class="cube">
-                            <div class="cube-face front">
-                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
-                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
-                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
-                            </div>
-                            <div class="cube-face back">
-                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
-                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
-                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
-                            </div>
-                            <div class="cube-face right">
-                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
-                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
-                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
-                            </div>
-                            <div class="cube-face left">
-                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
-                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
-                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
-                            </div>
-                            <div class="cube-face top">
-                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
-                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
-                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
-                            </div>
-                            <div class="cube-face bottom">
-                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
-                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
-                                <div class="cube-cell"></div><div class="cube-cell"></div><div class="cube-cell"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="loading-text">
-                        <span>Processing your codebase...</span>
-                        <span id="progressPercent" style="margin-left: 10px; color: #667eea; font-weight: 600;">0%</span>
-                    </div>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value" id="filesProcessed">0</div>
-                        <div class="stat-label">Files Processed</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="filesAnalyzed">0</div>
-                        <div class="stat-label">Files Analyzed</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="filesRefactored">0</div>
-                        <div class="stat-label">Files Refactored</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="timeElapsed">0s</div>
-                        <div class="stat-label">Time Elapsed</div>
-                    </div>
-                </div>
-
-                <h3 class="section-title" style="margin-top: 25px;">📋 Status Log</h3>
-                <div class="status-log" id="statusLog">
-                    <div class="log-entry">Waiting to start...</div>
+            <div class="result-card" id="recommendationsCard" style="display:none;">
+                <h3>💡 Codebase Recommendations</h3>
+                <div class="formatted-content" id="recommendationsContent">
+                    <p>Loading recommendations...</p>
                 </div>
             </div>
 
-            <div class="results-section" id="resultsSection">
-                <h2 class="section-title">✅ Results</h2>
-                
-                <div class="download-card">
-                    <h2>📦 Download Refactored Code</h2>
-                    <p>Your refactored codebase is ready for download</p>
-                    <button class="btn btn-download" onclick="downloadResults()">
-                        ⬇️ Download ZIP
-                    </button>
+            <div class="result-card" id="interviewCard" style="display:none;">
+                <h3>🎙️ Interview Questions</h3>
+                <div class="formatted-content" id="interviewContent">
+                    <p>Loading interview questions...</p>
                 </div>
+            </div>
 
-                <div class="result-card" id="recommendationsCard" style="display:none;">
-                    <h3>💡 Codebase Recommendations</h3>
-                    <div class="recommendations-content" id="recommendationsContent">
-                        <p>Loading recommendations...</p>
-                    </div>
-                </div>
-
-                <div class="result-card" id="interviewCard" style="display:none;">
-                    <h3>🎙️ Interview Questions</h3>
-                    <div class="recommendations-content" id="interviewContent">
-                        <p>Loading interview questions...</p>
-                    </div>
-                </div>
-
-                <div class="result-card">
-                    <h3>📁 Processed Files</h3>
-                    <ul class="file-list" id="fileList">
-                        <!-- Files will be added here dynamically -->
-                    </ul>
-                </div>
+            <div class="result-card">
+                <h3>📁 Processed Files</h3>
+                <ul class="file-list" id="fileList"></ul>
             </div>
         </div>
     </div>
@@ -719,19 +949,24 @@
         let timerInterval;
         let statusInterval;
 
-        function simpleMarkdownToHtml(markdown) {
+        function markdownToFormattedHTML(markdown) {
             let html = markdown
-                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
                 .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
                 .replace(/`(.*?)`/g, '<code>$1</code>')
                 .replace(/^\- (.*$)/gim, '<li>$1</li>')
+                .replace(/^\d+\.\s+(.*$)/gim, '<li>$1</li>')
                 .replace(/\n\n/g, '</p><p>')
                 .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
             
-            return '<p>' + html + '</p>';
+            if (!html.startsWith('<h1>') && !html.startsWith('<h2>') && !html.startsWith('<ul>')) {
+                html = '<p>' + html + '</p>';
+            }
+            
+            return html;
         }
 
         function updateStats(processed, analyzed, refactored) {
@@ -777,14 +1012,11 @@
                     
                     updateStats(data.files_processed, data.files_analyzed, data.files_refactored);
                     
-                    // Update progress percentage
                     if (data.progress !== undefined) {
                         document.getElementById('progressPercent').textContent = Math.round(data.progress) + '%';
                         
-                        // Stop animation when 100%
                         if (data.progress >= 100) {
                             document.querySelector('.atom-loader').classList.add('completed');
-                            document.querySelector('.cube-loader').classList.add('completed');
                         }
                     }
                     
@@ -803,7 +1035,7 @@
                         stopStatusPolling();
                         alert('Error: ' + (data.error || 'Unknown error occurred'));
                         document.getElementById('startBtn').disabled = false;
-                        document.getElementById('startBtn').textContent = '🚀 Start Refactoring';
+                        document.getElementById('startBtn').innerHTML = '<span>🚀</span> Start Refactoring';
                     }
                 } catch (error) {
                     console.error('Error polling status:', error);
@@ -828,17 +1060,17 @@
 
             if (data.recommendations) {
                 document.getElementById('recommendationsCard').style.display = 'block';
-                document.getElementById('recommendationsContent').innerHTML = simpleMarkdownToHtml(data.recommendations);
+                document.getElementById('recommendationsContent').innerHTML = markdownToFormattedHTML(data.recommendations);
             }
 
             if (data.interview_questions) {
                 document.getElementById('interviewCard').style.display = 'block';
-                document.getElementById('interviewContent').innerHTML = simpleMarkdownToHtml(data.interview_questions);
+                document.getElementById('interviewContent').innerHTML = markdownToFormattedHTML(data.interview_questions);
             }
 
             document.getElementById('resultsSection').classList.add('active');
             document.getElementById('startBtn').disabled = false;
-            document.getElementById('startBtn').textContent = '🚀 Start New Refactoring';
+            document.getElementById('startBtn').innerHTML = '<span>🚀</span> Start New Refactoring';
         }
 
         async function downloadResults() {
@@ -879,15 +1111,13 @@
             document.getElementById('interviewCard').style.display = 'none';
             document.getElementById('progressPercent').textContent = '0%';
             
-            // Reset animation
             document.querySelector('.atom-loader').classList.remove('completed');
-            document.querySelector('.cube-loader').classList.remove('completed');
             
             updateStats(0, 0, 0);
             
             document.getElementById('progressSection').classList.add('active');
             document.getElementById('startBtn').disabled = true;
-            document.getElementById('startBtn').textContent = '⏳ Processing...';
+            document.getElementById('startBtn').innerHTML = '<span>⏳</span> Processing...';
             
             startTimer();
             
@@ -917,7 +1147,7 @@
                 alert('Error: ' + error.message);
                 stopTimer();
                 document.getElementById('startBtn').disabled = false;
-                document.getElementById('startBtn').textContent = '🚀 Start Refactoring';
+                document.getElementById('startBtn').innerHTML = '<span>🚀</span> Start Refactoring';
             }
         }
 
@@ -935,4 +1165,3 @@
     </script>
 </body>
 </html>
-                
